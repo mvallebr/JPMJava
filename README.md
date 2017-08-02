@@ -48,7 +48,8 @@ Maybe the best approach would be having unit tests to test logic of each class,
 then having some integration tests executing the whole program and capturing the full 
 report if needed. 
 
-However, it was not possible to adopt such approach for a simple exercise. I decided
+However, for this exercise, I thought it would be safer to have tests against what
+was printed in the output as I thought this could be what was being expected. I decided
 to test the full output to be sure I was sticking to the requirements of writing
 things to the console.
 Also, the first test, which sends data to the console, I would probably not use 
@@ -93,7 +94,10 @@ for each date. However, whatever could be the requirement, it should be easy to 
 the code created to fulfil it. 
 
 
+### UTF-8
 
+I saved and commited every file and resource file in UTF-8. Things are expected 
+to be in UTF-8 for tests to work. 
 
 
 

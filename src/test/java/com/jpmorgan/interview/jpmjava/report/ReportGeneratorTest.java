@@ -16,7 +16,7 @@ import com.jpmorgan.interview.jpmjava.model.Instruction;
 public class ReportGeneratorTest {
 	/**
 	 * This compares the contents written to the byte array output stream (actual)
-	 * with the contents of file (excepted)
+	 * with the contents of file (expected)
 	 * 
 	 */
 	private void checkResult(List<Instruction> input, String filename) throws IOException {
@@ -25,7 +25,7 @@ public class ReportGeneratorTest {
 		rg.generate();
 		try (Scanner expectedScanner = new Scanner(this.getClass().getClassLoader().getResourceAsStream(filename),
 				"utf-8")) {
-			String expected = expectedScanner.useDelimiter("\\A").next();
+			String expected = expectedScanner.useDelimiter("\\A").next(); //Reads the whole file
 			String actual = baos.toString("UTF-8");
 			Assert.assertEquals(expected, actual);
 		}
