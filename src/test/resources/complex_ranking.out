@@ -1,0 +1,7 @@
+|     Settlement Date    |            Incoming    |            Outgoing    |
+|         05 Jan 2016    |               $0.00    |           $1,000.00    |
+incoming rank: 
+outgoing rank: foo
+|         07 Jan 2016    |              $57.00    |              $27.00    |
+incoming rank: E D C B A
+outgoing rank: bar
