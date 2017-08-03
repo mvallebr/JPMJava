@@ -2,6 +2,7 @@ package com.jpmorgan.interview.jpmjava.report;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class ReportGeneratorTest {
 		rg.generate();
 		try (Scanner expectedScanner = new Scanner(this.getClass().getClassLoader().getResourceAsStream(filename),
 				"utf-8")) {
-			String expected = expectedScanner.useDelimiter("\\A").next(); //Reads the whole file
+			String expected = expectedScanner.useDelimiter("\\A").next(); // Reads the whole file
 			String actual = baos.toString("UTF-8");
 			Assert.assertEquals(expected, actual);
 		}
@@ -39,20 +40,20 @@ public class ReportGeneratorTest {
 	@Test
 	public void testGenerateWorksWithStdout() throws IOException {
 		List<Instruction> input = new ArrayList<>();
-		input.add(new Instruction("foo", Instruction.BUY, 0.50d, "SGP", LocalDate.of(2016, 1, 1),
-				LocalDate.of(2016, 1, 2), 200, 100.25d));
+		input.add(new Instruction("foo", Instruction.BUY, new BigDecimal(0.50d), "SGP", LocalDate.of(2016, 1, 1),
+				LocalDate.of(2016, 1, 2), 200, new BigDecimal(100.25d)));
 		generateOnSysout(input);
 	}
 
 	@Test
 	public void testNoneSpecialWeekdays() throws IOException {
 		List<Instruction> input = new ArrayList<>();
-		input.add(new Instruction("foo", Instruction.BUY, 0.50d, "SGP", LocalDate.of(2016, 1, 1),
-				LocalDate.of(2016, 1, 5), 200, 100.25d));
-		input.add(new Instruction("bar", Instruction.SELL, 0.22d, "GBP", LocalDate.of(2016, 1, 5),
-				LocalDate.of(2016, 1, 7), 450, 150.5d));
-		input.add(new Instruction("foo", Instruction.SELL, 0.33d, "BRL", LocalDate.of(2016, 1, 5),
-				LocalDate.of(2016, 1, 7), 154, 1000.5d));
+		input.add(new Instruction("foo", Instruction.BUY, new BigDecimal(0.50d), "SGP", LocalDate.of(2016, 1, 1),
+				LocalDate.of(2016, 1, 5), 200, new BigDecimal(100.25d)));
+		input.add(new Instruction("bar", Instruction.SELL, new BigDecimal(0.22d), "GBP", LocalDate.of(2016, 1, 5),
+				LocalDate.of(2016, 1, 7), 450, new BigDecimal(150.5d)));
+		input.add(new Instruction("foo", Instruction.SELL, new BigDecimal(0.33d), "BRL", LocalDate.of(2016, 1, 5),
+				LocalDate.of(2016, 1, 7), 154, new BigDecimal(1000.5d)));
 
 		checkResult(input, "none_special_weekdays.out");
 	}
@@ -60,12 +61,12 @@ public class ReportGeneratorTest {
 	@Test
 	public void testSpecialWeekdays() throws IOException {
 		List<Instruction> input = new ArrayList<>();
-		input.add(new Instruction("foo", Instruction.BUY, 0.50d, "SAR", LocalDate.of(2016, 1, 1),
-				LocalDate.of(2016, 1, 5), 200, 100.25d));
-		input.add(new Instruction("bar", Instruction.SELL, 0.22d, "AED", LocalDate.of(2016, 1, 5),
-				LocalDate.of(2016, 1, 7), 450, 150.5d));
-		input.add(new Instruction("foo", Instruction.SELL, 0.33d, "SAR", LocalDate.of(2016, 1, 5),
-				LocalDate.of(2016, 1, 7), 154, 1000.5d));
+		input.add(new Instruction("foo", Instruction.BUY, new BigDecimal(0.50d), "SAR", LocalDate.of(2016, 1, 1),
+				LocalDate.of(2016, 1, 5), 200, new BigDecimal(100.25d)));
+		input.add(new Instruction("bar", Instruction.SELL, new BigDecimal(0.22d), "AED", LocalDate.of(2016, 1, 5),
+				LocalDate.of(2016, 1, 7), 450, new BigDecimal(150.5d)));
+		input.add(new Instruction("foo", Instruction.SELL, new BigDecimal(0.33d), "SAR", LocalDate.of(2016, 1, 5),
+				LocalDate.of(2016, 1, 7), 154, new BigDecimal(1000.5d)));
 
 		checkResult(input, "special_weekdays.out");
 	}
@@ -80,8 +81,8 @@ public class ReportGeneratorTest {
 	@Test
 	public void testWeekendAED() throws IOException {
 		List<Instruction> input = new ArrayList<>();
-		input.add(new Instruction("bar", Instruction.SELL, 0.22d, "AED", LocalDate.of(2016, 1, 1),
-				LocalDate.of(2016, 1, 2), 450, 150.5d));
+		input.add(new Instruction("bar", Instruction.SELL, new BigDecimal(0.22d), "AED", LocalDate.of(2016, 1, 1),
+				LocalDate.of(2016, 1, 2), 450, new BigDecimal(150.5d)));
 
 		checkResult(input, "weekend_AED.out");
 	}
@@ -89,10 +90,10 @@ public class ReportGeneratorTest {
 	@Test
 	public void testWeekendSAR() throws IOException {
 		List<Instruction> input = new ArrayList<>();
-		input.add(new Instruction("bar", Instruction.SELL, 0.22d, "SAR", LocalDate.of(2016, 1, 1),
-				LocalDate.of(2016, 1, 2), 450, 150.5d));
-		input.add(new Instruction("bar", Instruction.SELL, 0.22d, "SAR", LocalDate.of(2016, 1, 1),
-				LocalDate.of(2016, 1, 1), 450, 150.5d));
+		input.add(new Instruction("bar", Instruction.SELL, new BigDecimal(0.22d), "SAR", LocalDate.of(2016, 1, 1),
+				LocalDate.of(2016, 1, 2), 450, new BigDecimal(150.5d)));
+		input.add(new Instruction("bar", Instruction.SELL, new BigDecimal(0.22d), "SAR", LocalDate.of(2016, 1, 1),
+				LocalDate.of(2016, 1, 1), 450, new BigDecimal(150.5d)));
 
 		checkResult(input, "weekend_SAR.out");
 	}
@@ -100,10 +101,10 @@ public class ReportGeneratorTest {
 	@Test
 	public void testNoneSpecialWeekend() throws IOException {
 		List<Instruction> input = new ArrayList<>();
-		input.add(new Instruction("bar", Instruction.SELL, 0.22d, "GBP", LocalDate.of(2016, 1, 1),
-				LocalDate.of(2016, 1, 2), 450, 150.5d));
-		input.add(new Instruction("bar", Instruction.SELL, 0.22d, "BRL", LocalDate.of(2016, 1, 1),
-				LocalDate.of(2016, 1, 3), 450, 150.5d));
+		input.add(new Instruction("bar", Instruction.SELL, new BigDecimal(0.22d), "GBP", LocalDate.of(2016, 1, 1),
+				LocalDate.of(2016, 1, 2), 450, new BigDecimal(150.5d)));
+		input.add(new Instruction("bar", Instruction.SELL, new BigDecimal(0.22d), "BRL", LocalDate.of(2016, 1, 1),
+				LocalDate.of(2016, 1, 3), 450, new BigDecimal(150.5d)));
 
 		checkResult(input, "none_special_weekend.out");
 	}
@@ -111,20 +112,20 @@ public class ReportGeneratorTest {
 	@Test
 	public void testComplexRanking() throws IOException {
 		List<Instruction> input = new ArrayList<>();
-		input.add(new Instruction("foo", Instruction.BUY, 10d, "SAR", LocalDate.of(2016, 1, 1),
-				LocalDate.of(2016, 1, 5), 10, 10d));
-		input.add(new Instruction("bar", Instruction.BUY, 3d, "SAR", LocalDate.of(2016, 1, 5), LocalDate.of(2016, 1, 7),
-				3, 3d));
-		input.add(new Instruction("A", Instruction.SELL, 1d, "AED", LocalDate.of(2016, 1, 5), LocalDate.of(2016, 1, 7),
-				1, 1d));
-		input.add(new Instruction("B", Instruction.SELL, 2d, "SAR", LocalDate.of(2016, 1, 5), LocalDate.of(2016, 1, 7),
-				2, 2d));
-		input.add(new Instruction("C", Instruction.SELL, 2d, "GBP", LocalDate.of(2016, 1, 5), LocalDate.of(2016, 1, 7),
-				3, 2d));
-		input.add(new Instruction("D", Instruction.SELL, 2d, "BRL", LocalDate.of(2016, 1, 5), LocalDate.of(2016, 1, 7),
-				4, 2d));
-		input.add(new Instruction("E", Instruction.SELL, 2d, "TKY", LocalDate.of(2016, 1, 5), LocalDate.of(2016, 1, 7),
-				5, 2d));
+		input.add(new Instruction("foo", Instruction.BUY, new BigDecimal(10d), "SAR", LocalDate.of(2016, 1, 1),
+				LocalDate.of(2016, 1, 5), 10, new BigDecimal(10d)));
+		input.add(new Instruction("bar", Instruction.BUY, new BigDecimal(3d), "SAR", LocalDate.of(2016, 1, 5),
+				LocalDate.of(2016, 1, 7), 3, new BigDecimal(3d)));
+		input.add(new Instruction("A", Instruction.SELL, new BigDecimal(1d), "AED", LocalDate.of(2016, 1, 5),
+				LocalDate.of(2016, 1, 7), 1, new BigDecimal(1d)));
+		input.add(new Instruction("B", Instruction.SELL, new BigDecimal(2d), "SAR", LocalDate.of(2016, 1, 5),
+				LocalDate.of(2016, 1, 7), 2, new BigDecimal(2d)));
+		input.add(new Instruction("C", Instruction.SELL, new BigDecimal(2d), "GBP", LocalDate.of(2016, 1, 5),
+				LocalDate.of(2016, 1, 7), 3, new BigDecimal(2d)));
+		input.add(new Instruction("D", Instruction.SELL, new BigDecimal(2d), "BRL", LocalDate.of(2016, 1, 5),
+				LocalDate.of(2016, 1, 7), 4, new BigDecimal(2d)));
+		input.add(new Instruction("E", Instruction.SELL, new BigDecimal(2d), "TKY", LocalDate.of(2016, 1, 5),
+				LocalDate.of(2016, 1, 7), 5, new BigDecimal(2d)));
 		checkResult(input, "complex_ranking.out");
 	}
 

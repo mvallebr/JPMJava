@@ -3,6 +3,7 @@ package com.jpmorgan.interview.jpmjava.report;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,14 +31,14 @@ public class ReportGenerator {
 		this.ostream = ostream;
 	}
 
-	private Map<String, Double> rankEntities(List<Instruction> instructions, Predicate<Instruction> predicate) {
-		return instructions.stream().filter(predicate).collect(Collectors.groupingBy(Instruction::getEntity,
-				Collectors.summingDouble(Instruction::calculateUsdAmount)));
+	private Map<String, BigDecimal> rankEntities(List<Instruction> instructions, Predicate<Instruction> predicate) {
+		return instructions.stream().filter(predicate).collect(Collectors.groupingBy(Instruction::getEntity, Collectors
+				.mapping(Instruction::calculateUsdAmount, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
 	}
 
-	private void printEntitiesByRank(PrintWriter pw, Map<String, Double> rankedEntities, String prefix) {
+	private void printEntitiesByRank(PrintWriter pw, Map<String, BigDecimal> rankedEntities, String prefix) {
 		pw.println(rankedEntities.entrySet().stream()
-				.sorted(Comparator.comparing(Map.Entry<String, Double>::getValue).reversed()).map(Map.Entry::getKey)
+				.sorted(Comparator.comparing(Map.Entry<String, BigDecimal>::getValue).reversed()).map(Map.Entry::getKey)
 				.collect(Collectors.joining(" ", prefix, "")));
 	}
 
@@ -58,7 +59,8 @@ public class ReportGenerator {
 		pw.println(separator);
 	}
 
-	private void printDateDetail(PrintWriter pw, LocalDate date, Double incommingAmount, Double outgoingAmount) {
+	private void printDateDetail(PrintWriter pw, LocalDate date, BigDecimal incommingAmount,
+			BigDecimal outgoingAmount) {
 		printDateHeader(pw, dtFormatter.format(date), currencyFormatter.format(incommingAmount),
 				currencyFormatter.format(outgoingAmount));
 	}
@@ -70,11 +72,13 @@ public class ReportGenerator {
 			SortedMap<LocalDate, List<Instruction>> instructionsByDate = instructionsMappedByDate();
 
 			instructionsByDate.forEach((date, instructions) -> {
-				Map<String, Double> incommingRankByEntity = rankEntities(instructions, Instruction::getSell);
-				Double incommingAmount = incommingRankByEntity.values().stream().reduce(0d, (x, y) -> x + y);
-				
-				Map<String, Double> outgoingRankByEntity = rankEntities(instructions, Instruction::getBuy);
-				Double outgoingAmount = outgoingRankByEntity.values().stream().reduce(0d, (x, y) -> x + y);
+				Map<String, BigDecimal> incommingRankByEntity = rankEntities(instructions, Instruction::getSell);
+				BigDecimal incommingAmount = incommingRankByEntity.values().stream().reduce(BigDecimal.ZERO,
+						BigDecimal::add);
+
+				Map<String, BigDecimal> outgoingRankByEntity = rankEntities(instructions, Instruction::getBuy);
+				BigDecimal outgoingAmount = outgoingRankByEntity.values().stream().reduce(BigDecimal.ZERO,
+						BigDecimal::add);
 
 				printDateDetail(pw, date, incommingAmount, outgoingAmount);
 				printEntitiesByRank(pw, incommingRankByEntity, "incoming rank: ");

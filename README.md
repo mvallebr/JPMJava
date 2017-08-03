@@ -54,11 +54,14 @@ if desired that way, although the code is generic for other types of stream.
 
 ### BigDecimal
 
-I used `Double` to store values. I took as an assumption that this would be enough
-for any inputs I might receive and precision for floating point operations wouldn't 
-be a problem for the purposes of this project. However, in a real scenario, it 
-could be the case of using BigDecimal. As this was not stated in the requirements, 
-I used the simpler approach.
+Initially, I had used `Double` to store values, as there was nothing in the 
+requirements saying anything about precision or total possible amounts. The idea
+was to show the simplest possible solution, to avoid complicating without necessity.
+
+However, as JPMorgan is a financial company, I thought again and decided it was
+better to assume ` BigDecimal` should be used for every financial amount, as even being
+slower, it's more robust and it probably makes more sense to use it as default 
+for the kind of application I should be expecting.
 
 
 ### Fit in memory
