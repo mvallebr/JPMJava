@@ -25,12 +25,6 @@ and it didn't seem, from requirements, that the objective was to test OO ability
 in deep. Probably in a real case, with more detailed requirements, I would have
 worried more about classes responsibilities, reusability, etc. 
 
-However, the main objective seemed to be checking java 8 knowledge. That's why
-I implemented everything I could using streams, new date types, new try syntax, etc.
-BUT I have passed the last years using python and C++ and I am a little rusty in
-Java, I have used java 8 just in 1 project lately when I was able to learn some 
-of its new features, so please forgive me if something is still too "old style". 
-
 ### About the tests
 
 One big decision I made on the design was how to write the tests.
@@ -61,9 +55,11 @@ if desired that way, although the code is generic for other types of stream.
 ### BigDecimal
 
 I used `Double` to store values. I took as an assumption that this would be enough
-for any inputs I might receive. However, in a real scenario, it could be the case 
-of using BigDecimal. As this was not stated in the requirements, I used the simpler 
-approach.
+for any inputs I might receive and precision for floating point operations wouldn't 
+be a problem for the purposes of this project. However, in a real scenario, it 
+could be the case of using BigDecimal. As this was not stated in the requirements, 
+I used the simpler approach.
+
 
 ### Fit in memory
 
